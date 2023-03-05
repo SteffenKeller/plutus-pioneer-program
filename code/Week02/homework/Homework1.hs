@@ -1,13 +1,14 @@
 {-# LANGUAGE DataKinds           #-}
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
+{-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE TemplateHaskell     #-}
 
 module Homework1 where
 
 import qualified Plutus.V2.Ledger.Api as PlutusV2
 import           PlutusTx             (compile)
-import           PlutusTx.Prelude     (Bool (..), BuiltinData)
+import           PlutusTx.Prelude     (Bool (..), BuiltinData, traceIfFalse, (&&), ($), fst, snd)
 import           Utilities            (wrap)
 
 ---------------------------------------------------------------------------------------------------
@@ -16,7 +17,7 @@ import           Utilities            (wrap)
 {-# INLINABLE mkValidator #-}
 -- This should validate if and only if the two Booleans in the redeemer are True!
 mkValidator :: () -> (Bool, Bool) -> PlutusV2.ScriptContext -> Bool
-mkValidator _ _ _ = False
+mkValidator _ r _ = traceIfFalse "Error" $ fst r && snd r
 
 wrappedVal :: BuiltinData -> BuiltinData -> BuiltinData -> ()
 wrappedVal = wrap mkValidator
